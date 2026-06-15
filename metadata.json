@@ -1,0 +1,8 @@
+{
+  "name": "Sanjeevani HMS",
+  "description": "Professional Hospital Management System tailored for Indian healthcare facilities. Features Patient, Doctor, Appointment, and Billing management with an AI-powered assistant.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

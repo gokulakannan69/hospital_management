@@ -1,0 +1,96 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Patient {
+  id            String   @id @default(uuid())
+  patientCode   String   @unique // e.g., PAT-1001
+  name          String
+  age           Int
+  gender        String
+  phone         String
+  disease       String?
+  bloodGroup    String?
+  admissionDate DateTime @default(now())
+
+  appointments  Appointment[]
+  billings      Billing[]
+  records       Record[]
+}
+
+model Doctor {
+  id             String   @id @default(uuid())
+  doctorCode     String   @unique // e.g., DOC-201
+  name           String
+  department     String
+  specialization String
+  experience     String
+  phone          String
+
+  appointments   Appointment[]
+  records        Record[]
+}
+
+model Appointment {
+  id          String   @id @default(uuid())
+  aptCode     String   @unique // e.g., APT-3001
+  
+  patientId   String
+  patient     Patient  @relation(fields: [patientId], references: [id])
+  
+  doctorId    String
+  doctor      Doctor   @relation(fields: [doctorId], references: [id])
+  
+  date        String   // YYYY-MM-DD
+  time        String   // HH:MM AM/PM
+  status      String   @default("Scheduled") // Scheduled, Completed, Cancelled
+  createdAt   DateTime @default(now())
+}
+
+model Billing {
+  id          String   @id @default(uuid())
+  invCode     String   @unique // e.g., INV-4001
+  
+  patientId   String
+  patient     Patient  @relation(fields: [patientId], references: [id])
+  
+  date        String
+  amount      Float
+  status      String   @default("Pending") // Pending, Paid
+  method      String?  // UPI, Cash, Card
+  createdAt   DateTime @default(now())
+}
+
+model Record {
+  id          String   @id @default(uuid())
+  recCode     String   @unique // e.g., REC-5001
+  
+  patientId   String
+  patient     Patient  @relation(fields: [patientId], references: [id])
+  
+  doctorId    String
+  doctor      Doctor   @relation(fields: [doctorId], references: [id])
+  
+  diagnosis   String
+  prescription String
+  date        String
+  createdAt   DateTime @default(now())
+}
+
+model Issue {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  priority    String   @default("Medium") // Low, Medium, High
+  status      String   @default("Open") // Open, In Progress, Resolved
+  date        String
+  createdAt   DateTime @default(now())
+}
